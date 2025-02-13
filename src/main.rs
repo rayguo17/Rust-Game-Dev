@@ -25,7 +25,7 @@ use prelude::*;
 
 struct State {
     ecs: World,
-    resources: Resources,
+    resources: Resources, // Could we allow <T> Cell and Ref Cell is for lock access. Correct?
     systems: Schedule,
 }
 
@@ -34,7 +34,7 @@ impl State {
         let mut ecs = World::default();
         let mut resources = Resources::default();
         let mut rng = RandomNumberGenerator::new();
-        let mut mb = MapBuilder::new(&mut rng);
+        let mb = MapBuilder::new(&mut rng);
         resources.insert(mb.map);
         resources.insert(Camera::new(mb.player_start));
         spawn_player(&mut ecs, mb.player_start);
@@ -53,6 +53,7 @@ impl GameState for State {
         ctx.set_active_console(1);
         ctx.cls();
         self.resources.insert(ctx.key);
+        render_draw_buffer(ctx).expect("Render draw failed");
         self.systems.execute(&mut self.ecs, &mut self.resources);
     }
 }
