@@ -17,7 +17,7 @@ impl MapBuilder {
         mb.fill(TileType::Wall);
         mb.build_random_rooms(rng);
         mb.build_corridors(rng);
-        mb.player_start = mb.rooms[0].center();
+        mb.player_start = mb.rooms[0].center(); // TODO: room of player should come from config.
         mb
 
     }

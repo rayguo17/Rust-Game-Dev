@@ -9,12 +9,17 @@ pub fn entity_render(
     #[resource] camera: &Camera,
 ){
     let mut db = DrawBatch::new();
-    db.target(1);
-    let mut  query = <(&Point,&Render)>::query().filter(component::<Player>());
-    
-    for  (pos,rend) in query.iter(ecs){
+    db.target(1); // select the console layer 1.
+    <(&Point,&Render)>::query().iter(ecs).for_each(|(pos,render)|{
+        // only render those can be seen in camera
+
         let offset = Point::new(camera.left_x, camera.top_y);
-        db.set(*pos-offset, rend.color, rend.glyph);
-    }
+        let camera_pos = *pos-offset;
+        if camera_pos.x>0 && camera_pos.y>0{
+            db.set(camera_pos, render.color, render.glyph);
+        }
+       
+    });
+
     db.submit(5000).expect("Draw entity error");
 }
