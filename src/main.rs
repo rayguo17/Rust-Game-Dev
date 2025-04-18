@@ -45,7 +45,7 @@ impl State {
         resources.insert(Camera::new(mb.player_start));
         resources.insert(TurnState::AwaitPlayerInput);// initial state.
         spawn_player(&mut ecs, mb.player_start);
-        mb.rooms.iter().skip(1).map(|r|r.center()).for_each(|pos|{
+        mb.rooms.iter().skip(mb.rooms.len()-1).map(|r|r.center()).for_each(|pos|{
             spawn_monster(&mut ecs, pos, &mut rng);
         });
         
@@ -62,7 +62,14 @@ impl State {
 
 impl GameState for State {
     fn tick(&mut self, ctx: &mut BTerm) {
+        ctx.set_active_console(0);
         ctx.cls();
+        ctx.set_active_console(1);
+        ctx.cls();
+        ctx.set_active_console(2);
+        ctx.cls();
+        self.resources.insert(ctx.mouse_point());
+        
         self.resources.insert(ctx.key);
         let current_turn = self.resources.get::<TurnState>().unwrap().clone();
         match current_turn {
@@ -96,8 +103,10 @@ fn main() -> BError{
     .with_tile_dimensions(32, 32)
     .with_resource_path("resources/")
     .with_font("dungeonfont.png", 32, 32)
+    .with_font("terminal8x8.png", 8, 8)
     .with_simple_console(DISPLAY_WIDTH, DISPLAY_HEIGHT, "dungeonfont.png")
     .with_simple_console_no_bg(DISPLAY_WIDTH, DISPLAY_HEIGHT, "dungeonfont.png")
+    .with_simple_console_no_bg(SCREEN_WIDTH*2, SCREEN_HEIGHT*2, "terminal8x8.png")
     .with_fps_cap(30.0)
     .build()?;
     

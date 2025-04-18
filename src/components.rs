@@ -20,3 +20,12 @@ pub struct MoveIntent{
     pub entity: Entity,
     pub destination: Point
 }
+
+#[derive(Clone, Copy, PartialEq)]
+pub struct Health{
+    pub current: i32,
+    pub max: i32
+}
+
+#[derive(PartialEq, Clone)]
+pub struct Name(pub String);
